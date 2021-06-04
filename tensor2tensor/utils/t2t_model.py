@@ -1482,8 +1482,12 @@ class T2TModel(base.Layer):
     # TRAIN and EVAL modes
     if hparams.eval_run_autoregressive and mode == tf.estimator.ModeKeys.EVAL:
       logits, losses_dict = model.eval_autoregressive(features)
+      print("hello 0")
+      print("logits ", logits)
     else:
       logits, losses_dict = model(features)  # pylint: disable=not-callable
+      print("hello")
+      print("logits ", logits)
 
     # Support model-generated labels by overriding features["targets"] with
     # logits["self_generated_targets"].
