@@ -1482,13 +1482,13 @@ class T2TModel(base.Layer):
     # TRAIN and EVAL modes
     if hparams.eval_run_autoregressive and mode == tf.estimator.ModeKeys.EVAL:
       logits, losses_dict = model.eval_autoregressive(features)
-      print("hello 0")
-      print("logits ", logits)
+      # print("hello 0")
+      # print("logits ", logits)
     else:
       logits, losses_dict = model(features)  # pylint: disable=not-callable
-      print("hello")
-      print("features ", features)
-      print("logits ", logits)
+      # print("hello")
+      # print("features ", features)
+      # print("logits ", logits)
 
     # Support model-generated labels by overriding features["targets"] with
     # logits["self_generated_targets"].
@@ -1539,7 +1539,7 @@ class T2TModel(base.Layer):
     # Accumulate losses
     loss = sum(losses_dict[key] for key in sorted(losses_dict.keys()))
 
-    print("loss ", loss.eval())
+    # print("loss ", loss.eval())
     # EVAL mode
     if mode == tf.estimator.ModeKeys.EVAL:
       return model.estimator_spec_eval(features, logits, labels, loss,
@@ -1610,14 +1610,14 @@ class T2TModel(base.Layer):
     hparams = self.hparams
 
 
-    print("features in estimator_spec_eval", features)
+    # print("features in estimator_spec_eval", features)
 
     print("logits in estimator_spec_eval", logits)
     if not hasattr(hparams, "problem"):
       raise NotImplementedError(_no_problem_err("estimator_spec_eval"))
 
     problem = hparams.problem
-    print("problem in estimator_spec_eval", problem)
+    # print("problem in estimator_spec_eval", problem)
 
     if common_layers.is_xla_compiled():
       # Note: important to call this before remove_summaries()
