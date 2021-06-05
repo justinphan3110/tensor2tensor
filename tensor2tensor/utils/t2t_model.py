@@ -1542,9 +1542,9 @@ class T2TModel(base.Layer):
     print("loss ", loss)
     # EVAL mode
     if mode == tf.estimator.ModeKeys.EVAL:
-      return None
-      # return model.estimator_spec_eval(features, logits, labels, loss,
-      #                                  losses_dict)
+      # return None
+      return model.estimator_spec_eval(features, logits, labels, loss,
+                                       losses_dict)
 
     # TRAIN mode
     assert mode == tf.estimator.ModeKeys.TRAIN
@@ -1651,7 +1651,7 @@ class T2TModel(base.Layer):
       eval_metrics_fn_flat_args = _flatten_dict(eval_metrics_fn_args)
       return contrib.tpu().TPUEstimatorSpec(
           tf.estimator.ModeKeys.EVAL,
-          eval_metrics=(eval_metrics_fn, eval_metrics_fn_flat_args),
+          eval_metrics=(None, None),
           host_call=host_call,
           loss=loss)
     else:
