@@ -1610,6 +1610,8 @@ class T2TModel(base.Layer):
 
 
     print("features in estimator_spec_eval", features)
+
+    print("logits in estimator_spec_eval", logits)
     if not hasattr(hparams, "problem"):
       raise NotImplementedError(_no_problem_err("estimator_spec_eval"))
 
