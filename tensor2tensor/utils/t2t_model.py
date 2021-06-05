@@ -1610,11 +1610,11 @@ class T2TModel(base.Layer):
 
 
     print("features in estimator_spec_eval", features)
-    print("problem in estimator_spec_eval", problem)
     if not hasattr(hparams, "problem"):
       raise NotImplementedError(_no_problem_err("estimator_spec_eval"))
 
     problem = hparams.problem
+    print("problem in estimator_spec_eval", problem)
 
     if common_layers.is_xla_compiled():
       # Note: important to call this before remove_summaries()
