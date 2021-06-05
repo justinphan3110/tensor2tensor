@@ -1608,6 +1608,8 @@ class T2TModel(base.Layer):
     del losses_dict
     hparams = self.hparams
 
+
+    print("features in estimator_spec_eval", features)
     if not hasattr(hparams, "problem"):
       raise NotImplementedError(_no_problem_err("estimator_spec_eval"))
 
