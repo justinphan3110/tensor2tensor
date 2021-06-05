@@ -1487,6 +1487,7 @@ class T2TModel(base.Layer):
     else:
       logits, losses_dict = model(features)  # pylint: disable=not-callable
       print("hello")
+      print("features ", features)
       print("logits ", logits)
 
     # Support model-generated labels by overriding features["targets"] with
