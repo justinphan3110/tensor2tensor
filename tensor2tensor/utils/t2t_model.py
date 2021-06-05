@@ -1539,6 +1539,7 @@ class T2TModel(base.Layer):
     # Accumulate losses
     loss = sum(losses_dict[key] for key in sorted(losses_dict.keys()))
 
+    print("loss ", loss)
     # EVAL mode
     if mode == tf.estimator.ModeKeys.EVAL:
       return model.estimator_spec_eval(features, logits, labels, loss,
