@@ -1539,11 +1539,12 @@ class T2TModel(base.Layer):
     # Accumulate losses
     loss = sum(losses_dict[key] for key in sorted(losses_dict.keys()))
 
-    # print("loss ", loss.eval())
+    print("loss ", loss)
     # EVAL mode
     if mode == tf.estimator.ModeKeys.EVAL:
-      return model.estimator_spec_eval(features, logits, labels, loss,
-                                       losses_dict)
+      return None
+      # return model.estimator_spec_eval(features, logits, labels, loss,
+      #                                  losses_dict)
 
     # TRAIN mode
     assert mode == tf.estimator.ModeKeys.TRAIN
@@ -1612,7 +1613,7 @@ class T2TModel(base.Layer):
 
     # print("features in estimator_spec_eval", features)
 
-    print("logits in estimator_spec_eval", logits)
+    # print("logits in estimator_spec_eval", logits)
     if not hasattr(hparams, "problem"):
       raise NotImplementedError(_no_problem_err("estimator_spec_eval"))
 
