@@ -2053,6 +2053,7 @@ def create_tpu_eval_metrics_fn(problem, model_hparams):
             kwargs["features"] = features
 
           logits, labels = reduce_dimensions(logits, labels)
+          print("logits in make_metric_fn", logits)
           num, den = metric_fn(logits, labels, weights_fn=weights_fn, **kwargs)
           return tf.metrics.mean(num, den)
 
