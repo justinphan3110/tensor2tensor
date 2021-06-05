@@ -2044,7 +2044,7 @@ def create_tpu_eval_metrics_fn(problem, model_hparams):
     for k, v in six.iteritems(tm):
       weights_fn = modalities.get_weights_fn(v)
 
-      def make_metric_fn(metric_fn):
+      def make_metric_fn(name, metric_fn):
         """returns a metric_fn."""
         def wrapped_metric_fn(logits, labels, features, weights_fn=weights_fn):
           kwargs = {}
@@ -2053,6 +2053,7 @@ def create_tpu_eval_metrics_fn(problem, model_hparams):
             kwargs["features"] = features
 
           logits, labels = reduce_dimensions(logits, labels)
+          print("name ", name)
           print("logits in make_metric_fn", logits)
           num, den = metric_fn(logits, labels, weights_fn=weights_fn, **kwargs)
           return tf.metrics.mean(num, den)
@@ -2064,7 +2065,7 @@ def create_tpu_eval_metrics_fn(problem, model_hparams):
           log_warn("Skipping eval metric %s in TPU_METRIC_BLACKLIST", metric)
           continue
         name = "%s/metrics-%s/%s" % (k, problem.name, metric)
-        metric_fns.append((name, make_metric_fn(metric_fn)))
+        metric_fns.append((name, make_metric_fn(name, metric_fn)))
   else:
     weights_fn = modalities.get_weights_fn(tm)
 
