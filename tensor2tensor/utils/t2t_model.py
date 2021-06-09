@@ -1542,7 +1542,7 @@ class T2TModel(base.Layer):
     print("loss ", loss)
     # EVAL mode
     if mode == tf.estimator.ModeKeys.EVAL:
-      return tf.contrib.tpu.TPUEstimatorSpec(
+      return contrib().tpu.TPUEstimatorSpec(
           mode=mode,
           loss=loss,
           predictions=logits,
