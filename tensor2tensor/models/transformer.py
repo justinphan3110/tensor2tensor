@@ -305,7 +305,8 @@ class Transformer(t2t_model.T2TModel):
     features['inputs'] = inputs_tensor
 
     print("keys ", features['inputs'])
-    print("features", features)
+    print("features", features) 
+    print("transformed_features.keys " , transformed_features.keys)
 
     for key in features:
       if key not in transformed_features:
