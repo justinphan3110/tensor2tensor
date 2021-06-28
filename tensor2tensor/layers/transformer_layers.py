@@ -56,6 +56,8 @@ def transformer_prepare_encoder(inputs, target_space, hparams, features=None,
       attention
   """
   ishape_static = inputs.shape.as_list()
+
+  print("ishape_static ", ishape_static)
   encoder_input = inputs
   if features and "inputs_segmentation" in features:
     # Packed dataset.  Keep the examples from seeing each other.
