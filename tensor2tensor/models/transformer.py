@@ -41,6 +41,12 @@ from tensor2tensor.utils import mlperf_log
 from tensor2tensor.utils import registry
 from tensor2tensor.utils import t2t_model
 
+from tensor2tensor.utils.t2t_model import _create_target_modality, log_warn, log_info
+
+import collections
+import contextlib
+import six
+
 import tensorflow.compat.v1 as tf
 
 # pylint: disable=g-direct-tensorflow-import
@@ -221,6 +227,83 @@ class Transformer(t2t_model.T2TModel):
         hparams, attention_weights=self.attention_weights, cache=cache,
         decode_loop_step=decode_loop_step, nonpadding=nonpadding, losses=losses,
         **kwargs)
+  
+  def bottom(self, features):
+    """Transforms features to feed into body.
+
+    Args:
+      features: dict of str to Tensor. Typically it is the preprocessed data
+        batch after Problem's preprocess_example().
+
+    Returns:
+      transformed_features: dict of same key-value pairs as features. The value
+        Tensors are newly transformed.
+    """
+    if not self._problem_hparams:
+      log_warn("Without a Problem, T2TModel.bottom is a passthrough.")
+      return features
+
+    transformed_features = collections.OrderedDict()
+    all_previous_modalities = []
+    target_modality = _create_target_modality(self._problem_hparams.modality)
+
+    # Transform features via its corresponding modality.
+    for feature_name, modality in sorted(
+        six.iteritems(self._problem_hparams.modality)):
+      if feature_name not in features:
+        tf.logging.warning("Missing feature %s - ignoring." % feature_name)
+        continue
+      vocab_size = self._problem_hparams.vocab_size[feature_name]
+      if vocab_size is not None and hasattr(self._hparams, "vocab_divisor"):
+        vocab_size += (-vocab_size) % self._hparams.vocab_divisor
+      modality_name = self._hparams.name.get(
+          feature_name,
+          modalities.get_name(modality))(self._hparams, vocab_size)
+      # Use if-else clauses to preserve behavior of previous changes: namely,
+      # the variable scope name for the targets feature if there is only one
+      # target modality; and to reuse variable scopes for only input modalities.
+      if feature_name in target_modality:
+        if len(target_modality) > 1:
+          variable_scope_name = "%s/%s" % (modality_name, feature_name)
+        else:
+          variable_scope_name = modality_name
+        bottom = self._hparams.bottom.get(
+            feature_name,
+            modalities.get_targets_bottom(modality))
+        # TODO(aidangomez): share variables?
+        with tf.variable_scope(variable_scope_name) as vs:
+          self._add_variable_scope(variable_scope_name, vs)
+          log_info("Transforming feature '%s' with %s.targets_bottom",
+                   feature_name,
+                   modality_name)
+          transformed_features[feature_name] = bottom(features[feature_name],
+                                                      self._hparams,
+                                                      vocab_size)
+      else:
+        bottom = self._hparams.bottom.get(feature_name,
+                                          modalities.get_bottom(modality))
+        do_reuse = modality_name in all_previous_modalities
+        with tf.variable_scope(modality_name, reuse=do_reuse) as vs:
+          self._add_variable_scope(modality_name, vs)
+          log_info("Transforming feature '%s' with %s.bottom",
+                   feature_name,
+                   modality_name)
+          transformed_features[feature_name] = bottom(features[feature_name],
+                                                      self._hparams,
+                                                      vocab_size)
+        all_previous_modalities.append(modality_name)
+
+    for key in features:
+      if key not in transformed_features:
+        # For features without a modality, we pass them along as is
+        transformed_features[key] = features[key]
+      else:
+        # Other features get passed along with the "raw" suffix
+        transformed_features[key + "_raw"] = features[key]
+
+    return transformed_features
+
+
 
   def body(self, features):
     """Transformer main model_fn.
