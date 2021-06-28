@@ -297,6 +297,7 @@ class Transformer(t2t_model.T2TModel):
     batch_size = inputs_shape[0]
 
     special_tokens = tf.constant([[ [[21223]] ]])
+    special_tokens = tf.repeat(special_tokens, batch_size, axis=1)
     special_tokens = tf.repeat(special_tokens, batch_size, axis=0)
     
     print(special_tokens.shape)
