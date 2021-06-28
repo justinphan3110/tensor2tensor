@@ -303,10 +303,9 @@ class Transformer(t2t_model.T2TModel):
     print(special_tokens.shape)
     inputs_tensor = tf.concat([special_tokens, inputs_tensor], 1)
     features['inputs'] = inputs_tensor
-
-    print("keys ", features['inputs'])
+    
     print("features", features) 
-    print("transformed_features.keys " , transformed_features.keys)
+    
 
     for key in features:
       if key not in transformed_features:
@@ -316,6 +315,7 @@ class Transformer(t2t_model.T2TModel):
         # Other features get passed along with the "raw" suffix
         transformed_features[key + "_raw"] = features[key]
 
+    transformed_features['inputs'] = tf.cast(inputs_tensor, dtype=tf.float32)
 
     print("transformed_features", transformed_features)
     return transformed_features
@@ -410,6 +410,8 @@ class Transformer(t2t_model.T2TModel):
       Inputs which will be passed to the model. [batch_size, input_length, 1,
           hidden_dim]
     """
+
+    print("input in _prepare_inputs_for_body", features['inputs'])
     return features["inputs"]
 
   def _greedy_infer(self, features, decode_length, use_tpu=False):
