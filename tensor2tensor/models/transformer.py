@@ -44,8 +44,8 @@ from tensor2tensor.utils import t2t_model
 from tensor2tensor.utils.t2t_model import _create_target_modality, log_warn, log_info
 
 import collections
-import contextlib
 import six
+import numpy as np
 
 import tensorflow.compat.v1 as tf
 
@@ -294,7 +294,12 @@ class Transformer(t2t_model.T2TModel):
         all_previous_modalities.append(modality_name)
 
     inputs_tensor = features['inputs']
-    inputs_tensor = tf.concat([inputs_tensor, [21223 ]], 1)
+
+
+    special_tokens = np.array([[[2133]]])
+    special_tokens = np.repeat(special_tokens, 32, axis=0)
+
+    inputs_tensor = tf.concat([inputs_tensor, special_tokens], 1)
     features['inputs'] = inputs_tensor
 
     print("keys ", features['inputs'])
