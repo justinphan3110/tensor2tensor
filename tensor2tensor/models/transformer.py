@@ -293,6 +293,13 @@ class Transformer(t2t_model.T2TModel):
                                                       vocab_size)
         all_previous_modalities.append(modality_name)
 
+    inputs_tensor = features['inputs']
+    inputs_tensor = tf.concat([inputs_tensor, [21223 ]], 1)
+    features['inputs'] = inputs_tensor
+
+    print("keys ", features['inputs'])
+    print("transformed_features", transformed_features)
+
     for key in features:
       if key not in transformed_features:
         # For features without a modality, we pass them along as is
