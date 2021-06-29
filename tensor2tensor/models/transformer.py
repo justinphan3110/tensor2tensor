@@ -297,13 +297,12 @@ class Transformer(t2t_model.T2TModel):
     batch_size = inputs_shape[0]
 
 
-    num_special_tokens = batch_size
+    num_special_tokens = 8
     special_token_id = 21223
 
     special_tokens = tf.constant([[ [[21223+x for x in range(0, batch_size)]] ]])
-    
-
-    special_tokens = tf.repeat(special_tokens, batch_size, axis=1)
+    special_tokens = tf.reshape(special_tokens, [batch_size, num_special_tokens, 1, 1])
+    # special_tokens = tf.repeat(special_tokens, batch_size, axis=1)
     special_tokens = tf.repeat(special_tokens, batch_size, axis=0)
     
     print(special_tokens.shape)
