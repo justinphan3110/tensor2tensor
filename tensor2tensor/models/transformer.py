@@ -1853,10 +1853,10 @@ class Transformerextratokens(Transformer):
     batch_size = inputs_shape[0]
 
     print('hparams ', hparams)
-    num_special_tokens = hparams['extra_tokens']
+    num_special_tokens = hparams.extra_tokens
     special_token_id = 21223
 
-    special_tokens = tf.constant([[ [[21223+x]] for x in range(0, num_special_tokens)]])
+    special_tokens = tf.constant([[ [[special_token_id+x]] for x in range(0, num_special_tokens)]])
     # special_tokens = tf.reshape(special_tokens, [batch_size, num_special_tokens, 1, 1])
     # special_tokens = tf.repeat(special_tokens, batch_size, axis=1)
     special_tokens = tf.repeat(special_tokens, batch_size, axis=0)
