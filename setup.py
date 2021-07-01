@@ -44,7 +44,7 @@ setup(
         'absl-py',
         'bz2file',
         'dopamine-rl==2.0.0',
-        'google-auth=1.4.0',
+        'google-auth~=1.4.0',
         'flask',
         'future',
         'gevent',
