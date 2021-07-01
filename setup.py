@@ -46,6 +46,7 @@ setup(
         'tensorflow==1.15.5',
         'dopamine-rl==2.0.0',
         'google-auth~=1.4.0',
+        'tensorflow-datasets==3.2.1',
         'flask',
         'future',
         'gevent',
