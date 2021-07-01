@@ -43,7 +43,7 @@ setup(
     install_requires=[
         'absl-py',
         'bz2file',
-        'dopamine-rl==3.1.14',
+        'dopamine-rl==2.0.0',
         'flask',
         'future',
         'gevent',
