@@ -43,6 +43,7 @@ setup(
     install_requires=[
         'absl-py',
         'bz2file',
+        'tensorflow==1.15.5',
         'dopamine-rl==2.0.0',
         'google-auth~=1.4.0',
         'flask',
