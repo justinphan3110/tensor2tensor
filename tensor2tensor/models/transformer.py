@@ -1861,9 +1861,10 @@ class Transformerextratokens(Transformer):
     # special_tokens = tf.repeat(special_tokens, batch_size, axis=1)
     special_tokens = tf.repeat(special_tokens, batch_size, axis=0)
     special_tokens = tf.cast(special_tokens, dtype=tf.float32)
-    
+
     print(special_tokens.shape)
-    inputs_tensor = tf.concat([special_tokens, inputs_tensor], 1)
+    # inputs_tensor = tf.concat([special_tokens, inputs_tensor], 1)
+    inputs_tensor = tf.concat([[], inputs_tensor], 1)
     features['inputs'] = inputs_tensor
     
     print("features", features) 
