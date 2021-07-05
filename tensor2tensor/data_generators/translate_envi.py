@@ -58,39 +58,39 @@ class TranslateEnviIwslt32k(translate.TranslateProblem):
     return _ENVI_TRAIN_DATASETS if train else _ENVI_TEST_DATASETS
 
 
-# _PSEUDO_LABEL_MULTICC_ENVI_TRAIN_DATASETS = [
-#     ['', ('train.en', 'train.vi')],  # original.
-#     ['', ('MultiCCAligned.en.fixed.filter.filtertest.subset', 'MultiCCAligned.vi.fixed.filter.filtertest.subset')]
-# ]
+_PSEUDO_LABEL_MULTICC_ENVI_TRAIN_DATASETS = [
+    ['', ('train.en', 'train.vi')],  # original.
+    ['', ('MultiCCAligned.en.fixed.filter.filtertest.subset', 'MultiCCAligned.vi.fixed.filter.filtertest.subset')]
+]
 
-# @registry.register_problem
-# class PseudoLabelMulticcTranslateEnviIwslt32k(translate.TranslateProblem):
-#   """Problem spec for IWSLT'15 En-Vi translation."""
+@registry.register_problem
+class PseudoLabelMulticcTranslateEnviIwslt32k(translate.TranslateProblem):
+  """Problem spec for IWSLT'15 En-Vi translation."""
 
-#   @property
-#   def approx_vocab_size(self):
-#     return 2**15  # 32768
+  @property
+  def approx_vocab_size(self):
+    return 2**15  # 32768
 
-#   def source_data_files(self, dataset_split):
-#     train = dataset_split == problem.DatasetSplit.TRAIN
-#     return _PSEUDO_LABEL_MULTICC_ENVI_TRAIN_DATASETS if train else _ENVI_TEST_DATASETS
+  def source_data_files(self, dataset_split):
+    train = dataset_split == problem.DatasetSplit.TRAIN
+    return _PSEUDO_LABEL_MULTICC_ENVI_TRAIN_DATASETS if train else _ENVI_TEST_DATASETS
 
-# _PSEUDO_LABEL_MULTICC_VIEN_TRAIN_DATASETS = [
-#     ['', ('train.vi', 'train.en')],  # original.
-#     ['', ('MultiCCAligned.vi.fixed.filter.filtertest.subset', 'MultiCCAligned.en.fixed.filter.filtertest.subset')]
-# ]
+_PSEUDO_LABEL_MULTICC_VIEN_TRAIN_DATASETS = [
+    ['', ('train.vi', 'train.en')],  # original.
+    ['', ('MultiCCAligned.vi.fixed.filter.filtertest.subset', 'MultiCCAligned.en.fixed.filter.filtertest.subset')]
+]
 
 
-# @registry.register_problem
-# class PseudoLabelMulticcTranslateViEnIwslt32k(translate.TranslateProblem):
-#   """Problem spec for IWSLT'15 En-Vi translation."""
+@registry.register_problem
+class PseudoLabelMulticcTranslateViEnIwslt32k(translate.TranslateProblem):
+  """Problem spec for IWSLT'15 En-Vi translation."""
 
-#   @property
-#   def approx_vocab_size(self):
-#     return 2**15  # 32768
+  @property
+  def approx_vocab_size(self):
+    return 2**15  # 32768
 
-#   def source_data_files(self, dataset_split):
-#     train = dataset_split == problem.DatasetSplit.TRAIN
-#     return _PSEUDO_LABEL_MULTICC_VIEN_TRAIN_DATASETS if train else _ENVI_TEST_DATASETS
+  def source_data_files(self, dataset_split):
+    train = dataset_split == problem.DatasetSplit.TRAIN
+    return _PSEUDO_LABEL_MULTICC_VIEN_TRAIN_DATASETS if train else _ENVI_TEST_DATASETS
 
 
