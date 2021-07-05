@@ -3091,12 +3091,12 @@ def transformer_imagenet64_memory_v0():
 
   return hparams
 
-@registry.register_hparams
-def transformer_tall9_extra_tokens():
-  hparams = transformer.transformer_big()
-  hparams.hidden_size = 768
-  hparams.filter_size = 3072
-  hparams.num_hidden_layers = 9
-  hparams.num_heads = 12
-  hparams.add_hparam("extra_tokens", FLAGS.extra_tokens)
-  return hparams
+# @registry.register_hparams
+# def transformer_tall9_extra_tokens():
+#   hparams = transformer.transformer_big()
+#   hparams.hidden_size = 768
+#   hparams.filter_size = 3072
+#   hparams.num_hidden_layers = 9
+#   hparams.num_heads = 12
+#   hparams.add_hparam("extra_tokens", FLAGS.extra_tokens)
+#   return hparams
