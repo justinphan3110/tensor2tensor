@@ -1056,6 +1056,7 @@ def fast_decode_tpu(encoder_output,
   Raises:
     NotImplementedError: If beam size > 1 with partial targets.
   """
+  print('in fast_decode_tpu')
   if encoder_output is not None:
     batch_size = common_layers.shape_list(encoder_output)[0]
 
