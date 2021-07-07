@@ -1830,42 +1830,34 @@ class Transformerextratokens(Transformer):
         # TODO(aidangomez): share variables?
         with tf.variable_scope(variable_scope_name) as vs:
           self._add_variable_scope(variable_scope_name, vs)
-
-          if feature_name == 'input':
-            inputs_tensor = features['inputs']
-            inputs_shape = inputs_tensor.shape
-            batch_size = inputs_shape[0]
-            num_special_tokens = hparams.extra_tokens
-            special_token_id = 21223
-            special_tokens = tf.constant([[ [[special_token_id+x]] for x in range(0, num_special_tokens)]])
-            special_tokens = tf.repeat(special_tokens, batch_size, axis=0)
-            inputs_tensor = tf.concat([special_tokens, inputs_tensor], 1)
-
-            log_info("Transforming feature '%s' with %s.targets_bottom with %d extra special tokens",
-                    feature_name,
-                    modality_name,
-                    num_special_tokens)
-            transformed_features[feature_name] = bottom(inputs_tensor,
-                                                        self._hparams,
-                                                      vocab_size)            
-
-          else:
-            log_info("Transforming feature '%s' with %s.targets_bottom",
-                    feature_name,
-                    modality_name)
-            transformed_features[feature_name] = bottom(features[feature_name],
-                                                        self._hparams,
-                                                      vocab_size)
+          log_info("Transforming feature '%s' with %s.targets_bottom",
+                  feature_name,
+                  modality_name)
+          transformed_features[feature_name] = bottom(features[feature_name],
+                                                      self._hparams,
+                                                    vocab_size)
       else:
         bottom = self._hparams.bottom.get(feature_name,
                                           modalities.get_bottom(modality))
         do_reuse = modality_name in all_previous_modalities
         with tf.variable_scope(modality_name, reuse=do_reuse) as vs:
           self._add_variable_scope(modality_name, vs)
-          log_info("Transforming feature '%s' with %s.bottom",
+
+          inputs_tensor = features[feature_name]
+          inputs_shape = inputs_tensor.shape
+          batch_size = inputs_shape[0]
+          num_special_tokens = hparams.extra_tokens
+          special_token_id = 21223
+          special_tokens = tf.constant([[ [[special_token_id+x]] for x in range(0, num_special_tokens)]])
+          special_tokens = tf.repeat(special_tokens, batch_size, axis=0)
+          inputs_tensor = tf.concat([special_tokens, inputs_tensor], 1)
+
+
+          log_info("Transforming feature '%s' with %s.bottom with %d extra tokens",
                    feature_name,
-                   modality_name)
-          transformed_features[feature_name] = bottom(features[feature_name],
+                   modality_name, 
+                   num_special_tokens)
+          transformed_features[feature_name] = bottom(inputs_tensor,
                                                       self._hparams,
                                                       vocab_size)
         all_previous_modalities.append(modality_name)
