@@ -1782,6 +1782,7 @@ class Transformerextratokens(Transformer):
   def __init__(self, *args, **kwargs):
     super(Transformerextratokens, self).__init__(*args, **kwargs)
 
+
   def bottom(self, features):
     """Transforms features to feed into body.
 
@@ -1829,11 +1830,31 @@ class Transformerextratokens(Transformer):
         # TODO(aidangomez): share variables?
         with tf.variable_scope(variable_scope_name) as vs:
           self._add_variable_scope(variable_scope_name, vs)
-          log_info("Transforming feature '%s' with %s.targets_bottom",
-                   feature_name,
-                   modality_name)
-          transformed_features[feature_name] = bottom(features[feature_name],
-                                                      self._hparams,
+
+          if feature_name == 'input':
+            inputs_tensor = features['inputs']
+            inputs_shape = inputs_tensor.shape
+            batch_size = inputs_shape[0]
+            num_special_tokens = hparams.extra_tokens
+            special_token_id = 21223
+            special_tokens = tf.constant([[ [[special_token_id+x]] for x in range(0, num_special_tokens)]])
+            special_tokens = tf.repeat(special_tokens, batch_size, axis=0)
+            inputs_tensor = tf.concat([special_tokens, inputs_tensor], 1)
+
+            log_info("Transforming feature '%s' with %s.targets_bottom with %d extra special tokens",
+                    feature_name,
+                    modality_name,
+                    num_special_tokens)
+            transformed_features[feature_name] = bottom(inputs_tensor,
+                                                        self._hparams,
+                                                      vocab_size)            
+
+          else:
+            log_info("Transforming feature '%s' with %s.targets_bottom",
+                    feature_name,
+                    modality_name)
+            transformed_features[feature_name] = bottom(features[feature_name],
+                                                        self._hparams,
                                                       vocab_size)
       else:
         bottom = self._hparams.bottom.get(feature_name,
@@ -1849,26 +1870,18 @@ class Transformerextratokens(Transformer):
                                                       vocab_size)
         all_previous_modalities.append(modality_name)
 
-    inputs_tensor = features['inputs']
-    inputs_shape = inputs_tensor.shape
-    batch_size = inputs_shape[0]
+    # inputs_tensor = features['inputs']
+    # inputs_shape = inputs_tensor.shape
+    # batch_size = inputs_shape[0]
+    # num_special_tokens = hparams.extra_tokens
+    # special_token_id = 21223
+    # special_tokens = tf.constant([[ [[special_token_id+x]] for x in range(0, num_special_tokens)]])
+    # special_tokens = tf.repeat(special_tokens, batch_size, axis=0)
+    # inputs_tensor = tf.concat([special_tokens, inputs_tensor], 1)
 
-    print('hparams ', hparams)
-    num_special_tokens = hparams.extra_tokens
-    special_token_id = 21223
-
-    special_tokens = tf.constant([[ [[special_token_id+x]] for x in range(0, num_special_tokens)]])
-    # special_tokens = tf.reshape(special_tokens, [batch_size, num_special_tokens, 1, 1])
-    # special_tokens = tf.repeat(special_tokens, batch_size, axis=1)
-    special_tokens = tf.repeat(special_tokens, batch_size, axis=0)
-    # special_tokens = tf.cast(special_tokens, dtype=tf.float32)
-
-    print(special_tokens.shape)
-    inputs_tensor = tf.concat([special_tokens, inputs_tensor], 1)
-    # inputs_tensor = tf.concat([[], inputs_tensor], 1)
-    features['inputs'] = inputs_tensor
+    # features['inputs'] = inputs_tensor
     
-    print("features", features) 
+    # print("features", features) 
     
 
     for key in features:
@@ -1879,9 +1892,9 @@ class Transformerextratokens(Transformer):
         # Other features get passed along with the "raw" suffix
         transformed_features[key + "_raw"] = features[key]
 
-    transformed_features['inputs'] = tf.cast(inputs_tensor, dtype=tf.float32)
+    # transformed_features['inputs'] = tf.cast(inputs_tensor, dtype=tf.float32)
 
-    print("transformed_features", transformed_features)
+    # print("transformed_features", transformed_features)
     return transformed_features
 
 
