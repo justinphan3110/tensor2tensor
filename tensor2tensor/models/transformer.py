@@ -1775,6 +1775,60 @@ class TransformerMemory(Transformer):
                                   top_beams, alpha, use_tpu)
 
 
+
+@registry.register_model
+class TransformerExtraTokenV2(Transformer):
+
+  def __init__(self, *args, **kwargs):
+    super(TransformerExtraTokenV2, self).__init__(*args, **kwargs)
+  
+  def body(self, features):
+    
+    hparams = self._hparams
+    hidden_dim = hparams.hidden_size
+    num_extras = hparams.extra_tokens
+    
+    inputs = features['inputs']  # [batch_size, length, 1, hidden_dim]
+    batch_size = inputs.shape[0]
+    
+    extra_tokens = tf.get_variable(
+            'extra_tokens', [1, num_extras, 1, hidden_dim],
+            initializer=tf.random_normal_initializer(0.0, hidden_dim**-0.5))
+    
+    extra_tokens = tf.repeat(extra_tokens, batch_size, axis=0)  # [batch, num_extras, 1, hidden_dim]
+    
+    features['inputs'] = tf.concat([extra_tokens, inputs], axis=1)  # [batch, num_extras+len, 1, hidden_dim]
+    
+    return super(TransformerExtraTokenV2, self).body(features)
+
+@registry.register_model
+class Transformerextratokensv2(Transformer):
+  """Attention net.  See file docstring."""
+
+  def __init__(self, *args, **kwargs):
+    super(Transformerextratokensv2, self).__init__(*args, **kwargs)
+
+  def body(self, features):
+  
+    hparams = self._hparams
+    hidden_dim = hparams.hidden_size
+    num_extras = hparams.extra_tokens
+    
+    inputs = features['inputs']  # [batch_size, length, 1, hidden_dim]
+    batch_size = inputs.shape[0]
+    num_extras = hparams.extra_tokens
+
+    extra_tokens = tf.get_variable(
+            'extra_tokens', [1, num_extras, 1, hidden_dim],
+            initializer=tf.random_normal_initializer(0.0, hidden_dim**-0.5))
+    
+    extra_tokens = tf.repeat(extra_tokens, batch_size, axis=0)  # [batch, num_extras, 1, hidden_dim]
+    
+    features['inputs'] = tf.concat([extra_tokens, inputs], axis=1)  # [batch, num_extras+len, 1, hidden_dim]
+    
+    return super(Transformerextratokensv2, self).body(features)
+
+
 @registry.register_model
 class Transformerextratokens(Transformer):
   """Attention net.  See file docstring."""
@@ -1890,28 +1944,6 @@ class Transformerextratokens(Transformer):
     return transformed_features
 
 
-
-@registry.register_model
-class TransformerExtraTokenV2(Transformer):
-  
-  def body(self, features):
-    
-    hparams = self._hparams
-    hidden_dim = hparams.hidden_size
-    num_extras = hparams.extra_tokens
-    
-    inputs = features['inputs']  # [batch_size, length, 1, hidden_dim]
-    batch_size = inputs.shape[0]
-    
-    extra_tokens = tf.get_variable(
-            'extra_tokens', [1, num_extras, 1, hidden_dim],
-            initializer=tf.random_normal_initializer(0.0, hidden_dim**-0.5))
-    
-    extra_tokens = tf.repeat(extra_tokens, batch_size, axis=0)  # [batch, num_extras, 1, hidden_dim]
-    
-    features['inputs'] = tf.concat([extra_tokens, inputs], axis=1)  # [batch, num_extras+len, 1, hidden_dim]
-    
-    return super(TransformerExtraTokenV2, self).body(features)
 
 @registry.register_hparams
 def transformer_base_v1():
