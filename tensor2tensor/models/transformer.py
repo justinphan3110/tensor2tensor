@@ -1905,7 +1905,7 @@ class TransformerExtraTokenV2(Transformer):
     
     extra_tokens = tf.get_variable(
             'extra_tokens', [1, num_extras, 1, hidden_dim],
-            initializer=tf.random_normal_initializer(0.0, hidden_dim**-0.5)))
+            initializer=tf.random_normal_initializer(0.0, hidden_dim**-0.5))
     
     extra_tokens = tf.repeat(extra_tokens, batch_size, axis=0)  # [batch, num_extras, 1, hidden_dim]
     
