@@ -3154,32 +3154,42 @@ def transformer_imagenet64_memory_v0():
 
   return hparams
 
-  
+
+@registry.register_hparams
+def transformer_tall9():
+  hparams = transformer_big()
+  hparams.hidden_size = 768
+  hparams.filter_size = 3072
+  hparams.num_hidden_layers = 9
+  hparams.num_heads = 12
+  return hparams
+
+
 # 3-15, 6-12, 9-9, 12-6, 15-3
 @registry.register_hparams
-def transformer_3_15():
-  hparams = transformer_base()
+def transformer_tall_3_15():
+  hparams = transformer_tall9()
   hparams.num_encoder_layers = 3
   hparams.num_decoder_layers = 15
   return hparams
 
 @registry.register_hparams
-def transformer_6_12():
-  hparams = transformer_base()
+def transformer_tall_6_12():
+  hparams = transformer_tall9()
   hparams.num_encoder_layers = 6
   hparams.num_decoder_layers = 12
   return hparams
 
 @registry.register_hparams
-def transformer_12_6():
-  hparams = transformer_base()
+def transformer_tall_12_6():
+  hparams = transformer_tall9()
   hparams.num_encoder_layers = 12
   hparams.num_decoder_layers = 6
   return hparams
 
 @registry.register_hparams
-def transformer_15_3():
-  hparams = transformer_base()
+def transformer_tall_15_3():
+  hparams = transformer_tall9()
   hparams.num_encoder_layers = 15
   hparams.num_decoder_layers = 3
   return hparams
