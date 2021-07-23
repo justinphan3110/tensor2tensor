@@ -3201,7 +3201,7 @@ def transformer_tall_15_3():
 class Transformerextratokentodecoder(Transformer):
 
   def __init__(self, *args, **kwargs):
-    super(TransformerExtraTokenToDecoder, self).__init__(*args, **kwargs)
+    super(Transformerextratokentodecoder, self).__init__(*args, **kwargs)
 
     def _prepare_extra_token_decoder_fn(targets, hparams, features):
       decoder_input, decoder_self_attention_bias = transformer_prepare_decoder(
