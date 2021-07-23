@@ -3198,7 +3198,7 @@ def transformer_tall_15_3():
 
 # ========== 7/23/2021 =======
 @registry.register_model
-class TransformerExtraTokenToDecoder(Transformer):
+class Transformerextratokentodecoder(Transformer):
 
   def __init__(self, *args, **kwargs):
     super(TransformerExtraTokenToDecoder, self).__init__(*args, **kwargs)
