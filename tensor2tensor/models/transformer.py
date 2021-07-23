@@ -3233,5 +3233,5 @@ class Transformerextratokentodecoder(Transformer):
   def decode(self, *args, **kwargs):
     hparams = self._hparams
     decoder_output = super(
-        TransformerExtraTokenToDecoder, self).decode(*args, **kwargs)
+        Transformerextratokentodecoder, self).decode(*args, **kwargs)
     return decoder_output[:, hparams.extra_tokens:, :]
