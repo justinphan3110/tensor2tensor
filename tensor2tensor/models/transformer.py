@@ -3193,3 +3193,45 @@ def transformer_tall_15_3():
   hparams.num_encoder_layers = 15
   hparams.num_decoder_layers = 3
   return hparams
+
+
+
+# ========== 7/23/2021 =======
+@registry.register_model
+class TransformerExtraTokenToDecoder(Transformer):
+
+  def __init__(self, *args, **kwargs):
+    super(TransformerExtraTokenToDecoder, self).__init__(*args, **kwargs)
+
+    def _prepare_extra_token_decoder_fn(targets, hparams, features):
+      decoder_input, decoder_self_attention_bias = transformer_prepare_decoder(
+          targets, hparams, features)
+      # [batch, length, hidden_dim], [None, 1, length, length]
+
+      batch_size = decoder_input.shape[0]
+      hidden_dim = hparams.hidden_size
+      num_extras = hparams.extra_tokens
+      extra_tokens = tf.get_variable(
+          'extra_tokens', [1, num_extras, hidden_dim],
+          initializer=tf.random_normal_initializer(0.0, hidden_dim**-0.5))
+      extra_tokens = tf.repeat(
+          extra_tokens, batch_size, axis=0)  # [batch, num_extras, hidden_dim]
+      decoder_input = tf.concat(
+          [extra_tokens, decoder_input], axis=1)  # [batch, num_extras+len, hidden_dim]
+
+      batch_size = decoder_self_attention_bias.shape[0]
+
+      decoder_self_attention_bias = tf.pad(
+          decoder_self_attention_bias,
+          [[0, 0], [0, 0], [num_extras, 0], [num_extras, 0]],
+          constant_values=0.0,
+      )
+      return decoder_input, decoder_self_attention_bias
+
+    self._prepare_decoder_fn = _prepare_extra_token_decoder_fn
+  
+  def decode(self, *args, **kwargs):
+    hparams = self._hparams
+    decoder_output = super(
+        TransformerExtraTokenToDecoder, self).decode(*args, **kwargs)
+    return decoder_output[:, hparams.extra_tokens:, :]
