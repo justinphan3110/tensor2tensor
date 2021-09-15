@@ -93,4 +93,38 @@ class TranslateEnviIwslt32k(translate.TranslateProblem):
 #     train = dataset_split == problem.DatasetSplit.TRAIN
 #     return _PSEUDO_LABEL_MULTICC_VIEN_TRAIN_DATASETS if train else _ENVI_TEST_DATASETS
 
+OPENSUBTITLES_VIEN = [
+     ['', ('train.vi', 'train.en')],  # original.
+     ['', ('OpenSubtitles.vi.subset', 'OpenSubtitles.en.subset')]
+]
+
+
+@registry.register_problem
+class OpensubtitlesViEn(translate.TranslateProblem):
+
+    @property
+    def approx_vocab_size(self):
+        return 2**15  # 32768
+
+    def source_data_files(self, dataset_split):
+        train = dataset_split == problem.DatasetSplit.TRAIN
+        return OPENSUBTITLES_VIEN if train else _ENVI_TEST_DATASETS
+    
+OPENSUBTITLES_ENVI = [
+     ['', ('train.en', 'train.vi')],  # original.
+     ['', ('OpenSubtitles.en.subset', 'OpenSubtitles.vi.subset')]
+]
+
+
+@registry.register_problem
+class OpensubtitlesEnVi(translate.TranslateProblem):
+
+    @property
+    def approx_vocab_size(self):
+        return 2**15  # 32768
+
+    def source_data_files(self, dataset_split):
+        train = dataset_split == problem.DatasetSplit.TRAIN
+        return OPENSUBTITLES_ENVI if train else _ENVI_TEST_DATASETS
+
 
