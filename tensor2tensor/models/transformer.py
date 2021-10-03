@@ -3239,7 +3239,7 @@ class Transformerextratokentodecoder(Transformer):
 
 # ======= 7/26/2021 =====
 @registry.register_model
-class Transformerextratokentodecoderv2(Transformer):
+class   (Transformer):
 
   def encode(self, *args, **kwargs):
     encoder_output, encoder_decoder_attention_bias = super(

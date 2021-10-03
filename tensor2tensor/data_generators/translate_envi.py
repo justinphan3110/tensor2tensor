@@ -30,7 +30,7 @@ EOS = text_encoder.EOS_ID
 # from https://nlp.stanford.edu/projects/nmt/ is used.
 # The original dataset has 133K parallel sentences.
 _ENVI_TRAIN_DATASETS = [[
-    "https://github.com/stefan-it/nmt-en-vi/raw/master/data/train-en-vi.tgz",  # pylint: disable=line-too-long
+    "",  # pylint: disable=line-too-long
     ("train.en", "train.vi")
 ]]
 
