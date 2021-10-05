@@ -3236,29 +3236,3 @@ class Transformerextratokentodecoder(Transformer):
         Transformerextratokentodecoder, self).decode(*args, **kwargs)
     return decoder_output[:, hparams.extra_tokens:, :]
 
-
-# ======= 7/26/2021 =====
-@registry.register_model
-class   (Transformer):
-
-  def encode(self, *args, **kwargs):
-    encoder_output, encoder_decoder_attention_bias = super(
-        Transformerextratokentodecoderv2, self).encode(*args, **kwargs)
-    hparams = self._hparams
-    batch_size = encoder_output.shape[0]
-    hidden_dim = int(encoder_output.shape[-1])
-    num_extras = hparams.extra_tokens
-    extra_tokens = tf.get_variable(
-        'extra_tokens', [1, num_extras, hidden_dim],
-        initializer=tf.random_normal_initializer(0.0, hidden_dim**-0.5))
-    extra_tokens = tf.repeat(
-        extra_tokens, batch_size, axis=0)  # [batch, num_extras, hidden_dim]
-    encoder_output = tf.concat(
-        [extra_tokens, encoder_output], axis=1)  # [batch, num_extras+len, hidden_dim]
-    
-    encoder_decoder_attention_bias = tf.pad(
-        encoder_decoder_attention_bias,
-        [[0, 0], [0, 0], [0, 0], [num_extras, 0]],
-        constant_values=0.0,
-    )
-    return encoder_output, encoder_decoder_attention_bias
