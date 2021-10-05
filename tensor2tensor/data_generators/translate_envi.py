@@ -34,6 +34,11 @@ _ENVI_TRAIN_DATASETS = [[
     ("train.en", "train.vi")
 ]]
 
+_VIEN_TRAIN_DATASETS = [[
+    "",  # pylint: disable=line-too-long
+    ("train.vi", "train.en")
+]]
+
 # For development 1,553 parallel sentences are used.
 _ENVI_TEST_DATASETS = [[
     "https://github.com/stefan-it/nmt-en-vi/raw/master/data/dev-2012-en-vi.tgz",  # pylint: disable=line-too-long
@@ -56,6 +61,19 @@ class TranslateEnviIwslt32k(translate.TranslateProblem):
   def source_data_files(self, dataset_split):
     train = dataset_split == problem.DatasetSplit.TRAIN
     return _ENVI_TRAIN_DATASETS if train else _ENVI_TEST_DATASETS
+
+
+@registry.register_problem
+class TranslateVienIwslt32k(translate.TranslateProblem):
+  """Problem spec for IWSLT'15 En-Vi translation."""
+
+  @property
+  def approx_vocab_size(self):
+    return 2**15  # 32768
+
+  def source_data_files(self, dataset_split):
+    train = dataset_split == problem.DatasetSplit.TRAIN
+    return _VIEN_TRAIN_DATASETS if train else _ENVI_TEST_DATASETS
 
 
 # _PSEUDO_LABEL_MULTICC_ENVI_TRAIN_DATASETS = [
