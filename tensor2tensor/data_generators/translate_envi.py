@@ -63,18 +63,6 @@ class TranslateEnviIwslt32k(translate.TranslateProblem):
     return _ENVI_TRAIN_DATASETS if train else _ENVI_TEST_DATASETS
 
 
-@registry.register_problem
-class TranslateVienIwslt32k(translate.TranslateProblem):
-  """Problem spec for IWSLT'15 En-Vi translation."""
-
-  @property
-  def approx_vocab_size(self):
-    return 2**15  # 32768
-
-  def source_data_files(self, dataset_split):
-    train = dataset_split == problem.DatasetSplit.TRAIN
-    return _VIEN_TRAIN_DATASETS if train else _ENVI_TEST_DATASETS
-
 
 # _PSEUDO_LABEL_MULTICC_ENVI_TRAIN_DATASETS = [
 #     ['', ('train.en', 'train.vi')],  # original.
